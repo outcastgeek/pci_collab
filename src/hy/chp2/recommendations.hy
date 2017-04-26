@@ -94,8 +94,7 @@
         si (list-comp {item 1} [item prefs1] (get prefs item))] ;; Fix this !!!!
     (hydebug si)))
 
-;; Main
-(defmain [&rest args]
+(defn run [&rest args]
   (hydebug "Critics: \n{}" (pf critics))
   (hydebug "{}'s rating for {} rating is {}"
            lisa lady_movie (-> critics (get lisa) (get lady_movie)))
@@ -104,4 +103,8 @@
   (hydebug "All of {}'s critics are: \n{}"
            toby (pf (-> critics (get toby))))
   (sim_distance critics mick jack))
+
+;; Main
+(defmain [&rest args]
+  (run args))
 

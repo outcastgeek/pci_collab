@@ -11,7 +11,11 @@ clean_all() {
 }
 
 create_py2env() {
-    conda create -n $ENV_NAME python=2
+    conda create -n $ENV_NAME python=2 -y
+}
+
+activate_env() {
+    source activate $ENV_NAME
 }
 
 case $1 in
@@ -19,24 +23,29 @@ case $1 in
         create_py2env
         ;;
     py.delete)
-        conda env remove -n $ENV_NAME
+        conda env remove -n $ENV_NAME -y
         ;;
     py.activate)
-        source activate $ENV_NAME
+        activate_env
         ;;
     deps.upgrade)
+        activate_env
         upgrade_all_deps
         ;;
     deps.list)
+        activate_env
         pip list
         ;;
     deps.outdated)
+        activate_env
         pip list --outdated
         ;;
     deps.freeze)
+        activate_env
         pip freeze > requirements.txt
         ;;
     deps.install)
+        activate_env
         pip install -r requirements.txt --upgrade
         ;;
     clean)
