@@ -11,3 +11,6 @@ destroy-env:
 deps-install:
 	$(CMD) deps.install
 
+notebook:
+	$(CMD) py.notebook
+

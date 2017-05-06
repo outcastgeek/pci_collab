@@ -32,8 +32,12 @@
                                            [s1 (get prefs person1)
                                             s2 (get prefs person2)]
                                            (= s1 s2))
-                                (reduce +))]
-        (/ 1 (+ 1 sum_of_squares))
+                                (reduce +))
+            similarity (/ 1 (+ 1 sum_of_squares))]
+        (hydebug
+         "< {} > and < {} > are [ {} ] similar"
+         person1 person2
+         similarity)
         ))
     ))
 

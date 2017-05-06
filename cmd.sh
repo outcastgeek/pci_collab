@@ -1,5 +1,6 @@
 #!/bin/bash
 
+BASEDIR=`pwd`
 ENV_NAME=PCIENV
 
 upgrade_all_deps() {
@@ -27,6 +28,13 @@ case $1 in
         ;;
     py.activate)
         activate_env
+        ;;
+    py.notebook)
+        activate_env
+        pip install -U jupyter
+        pip install git+https://github.com/Calysto/calysto_hy.git
+        python -m calysto_hy install
+        jupyter notebook $BASEDIR/notebooks
         ;;
     deps.upgrade)
         activate_env
