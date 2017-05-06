@@ -1,4 +1,4 @@
 # Git Attributes
 
-*.hy linguist-language=Lisp
+*.hy linguist-language=clojure
 
