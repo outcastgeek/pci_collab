@@ -4,8 +4,9 @@
 (import [logging]
         [pprint [pprint :as pp
                  pformat :as pf]]
-        [math [sqrt]]
-        [data [*]])
+        [math [sqrt]])
+
+(import [data [*]])
 
 (require [utils.macros [*]])
 
