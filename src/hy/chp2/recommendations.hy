@@ -30,8 +30,8 @@
       (let [sum_of_squares (->> (list-comp (-> (- (get prefs1 s2)
                                                   (get prefs2 s2))
                                                (pow 2))
-                                           [s1 (get prefs person1)
-                                            s2 (get prefs person2)]
+                                           [s1 prefs1
+                                            s2 prefs2]
                                            (= s1 s2))
                                 (reduce +))
             similarity (/ 1 (+ 1 sum_of_squares))]
@@ -39,6 +39,29 @@
          "< {} > and < {} > are [ {} ] similar"
          person1 person2
          similarity)
+        ))
+    ))
+
+(defn sim_pearson [prefs person1 person2]
+  "Returns the Pearson correlation coefficient for person1 and person2"
+  (let [prefs1 (get prefs person1)
+        prefs2 (get prefs person2)
+        ;; Get the list of mutually rated items
+        si (dict-comp s2 1 [s1 prefs1
+                            s2 prefs2] (= s1 s2))]
+    ;; Find the number of elements
+    ;; If they have no ratings in common, return 0
+    (if (-> si len (= 0))
+      0
+      ;; Add up all the preferences
+      (let [sum1 (->> (list-comp it [it si
+                                     s1 prefs1]
+                                 (= it s1))
+                      (reduce +))
+            sum2 (->> (list-comp it [it si
+                                     s2 prefs2]
+                                 (= it s2))
+                      (reduce +))]
         ))
     ))
 
