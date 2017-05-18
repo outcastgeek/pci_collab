@@ -27,18 +27,17 @@
     (if (-> si len (= 0))
       0
       ;; Add up the squares of all the differences
-      (let [sum_of_squares (->> (list-comp (-> (- (get prefs1 s2)
-                                                  (get prefs2 s2))
+      (let [sum_of_squares (->> (list-comp (-> (- (get prefs1 it)
+                                                  (get prefs2 it))
                                                (pow 2))
-                                           [s1 prefs1
-                                            s2 prefs2]
-                                           (= s1 s2))
+                                           (it si))
                                 (reduce +))
             similarity (/ 1 (+ 1 sum_of_squares))]
         (hydebug
-         "< {} > and < {} > are [ {} ] similar"
+         "SIM DISTANCE: < {} > and < {} > are [ {} ] similar"
          person1 person2
          similarity)
+        similarity
         ))
     ))
 
@@ -48,20 +47,46 @@
         prefs2 (get prefs person2)
         ;; Get the list of mutually rated items
         si (dict-comp s2 1 [s1 prefs1
-                            s2 prefs2] (= s1 s2))]
+                            s2 prefs2] (= s1 s2))
+        ;; Find the number of elements
+        n (len si)]
     ;; Find the number of elements
     ;; If they have no ratings in common, return 0
-    (if (-> si len (= 0))
+    (if (= n 0)
       0
       ;; Add up all the preferences
-      (let [sum1 (->> (list-comp it [it si
-                                     s1 prefs1]
-                                 (= it s1))
+      (let [sum1 (->> (list-comp (get prefs1 it)
+                                 (it si))
                       (reduce +))
-            sum2 (->> (list-comp it [it si
-                                     s2 prefs2]
-                                 (= it s2))
-                      (reduce +))]
+            sum2 (->> (list-comp (get prefs2 it)
+                                 (it si))
+                      (reduce +))
+            ;; Sum up the squares
+            sum1Sq (->> (list-comp (-> (get prefs1 it)
+                                       (pow 2))
+                                   (it si))
+                        (reduce +))
+            sum2Sq (->> (list-comp (-> (get prefs2 it)
+                                       (pow 2))
+                                   (it si))
+                        (reduce +))
+            ;; Sum up the products
+            pSum (->> (list-comp (* (get prefs1 it)
+                                    (get prefs2 it))
+                                 (it si))
+                      (reduce +))
+            ;; Calculate Pearson score
+            num (- pSum (* sum1 (/ sum2 n)))
+            den (sqrt (* (- sum1Sq
+                            (/ (pow sum1 2) n))
+                         (- sum2Sq
+                            (/ (pow sum2 2) n))))
+            similarity (/ num den)]
+        (hydebug
+         "SIM PEARSON: < {} > and < {} > are [ {} ] similar"
+         person1 person2
+         similarity)
+        similarity
         ))
     ))
 
@@ -74,7 +99,8 @@
   (hydebug "All of {}'s critics are: \n{}"
            toby (pf (-> critics (get toby))))
   (sim_distance critics lisa gene)
-  (sim_distance critics mick jack))
+  (sim_distance critics mick jack)
+  (sim_pearson critics lisa gene))
 
 ;; Main
 (defmain [&rest args]
